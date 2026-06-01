@@ -1,30 +1,17 @@
-
 <?php
-session_start();
 
-$host = "localhost";
-$user = "root";
-$pass = "root";
-$db = "sistema_simples";
-$conn = new mysqli($host,$user,$pass,$db);
-
-if($conn->connect_error){
-    die("Erro na conexão");
-}else{
-    echo ("<p> BD: ok </p>");
-}
+include("infra/db/connect.php");
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
 
     $usuario = $_POST["usuario"];
     $senha = $_POST["senha"];
 
-    $sql = "SELECT * FROM usuario 
-    WHERE usuario = '$usuario' 
-    AND senha = '$senha'";
+    $sql = "SELECT * FROM users 
+    WHERE username = '$usuario' 
+    AND password = '$senha'";
 
     $resultado = $conn -> query($sql);
-
 
     if($resultado -> num_rows > 0){
         $_SESSION["usuario"] = $usuario;
@@ -33,28 +20,22 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     }else{
         $erro = "Usuário ou senha inválidos.";
     }
-
 }
 
-
-
 ?>
-
-
-
-
 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login com PHP</title>
+    <link rel="stylesheet" href="style/style.css">
 </head>
 <body>
-    <h2>Login com PHP</h2>
-
-    <form method="POST">
-
+     <?php
+    include("public/component/navbar.php");
+    ?>
+    <h2>Login com PHP</h2><form method="POST">
         <label for="usuario">Usuario:</label>
         <input type="text" name="usuario">
         <br>
@@ -63,18 +44,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         <input type="password" name="senha">
         <br>
         <br>
+        <?php
+
+            if(isset($erro)){
+                echo $erro;
+            }
+        ?>
         <button type="submit">Entrar</button>
-
     </form>
-    <?php
     
-    if(isset($erro)){
 
-    echo $erro;
 
-    }
-
-    ?>
     
 </body>
 </html>
